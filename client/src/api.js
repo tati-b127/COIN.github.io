@@ -7,7 +7,6 @@ export async function getToken(login, password) {
   // const login = "developer";
   // const password = "skillbox";
   let token;
-  console.log(login, password);
   let responce = await fetch(`${CLIENT_ORIGIN_URL}login/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -20,14 +19,12 @@ export async function getToken(login, password) {
   if (responce.status === 200 && data.error === "" && data.payload !== null) {
     token = data.payload.token;
   } else throw new Error(data.error);
-  console.log(data.error);
   if (data.error) return data.error;
   let localToken = await setLocalToken(token);
   return localToken;
 }
 
 export async function getAccounts(token) {
-  console.log(token);
   let responce = await fetch(`${CLIENT_ORIGIN_URL}accounts/`, {
     method: "GET",
     headers: {
@@ -37,7 +34,6 @@ export async function getAccounts(token) {
   });
   let data = await responce.json();
   let payloadData;
-  console.log(data);
   if (responce.status === 200 && data.error === "" && data.payload !== null) {
     payloadData = data.payload;
   } else throw new Error(data.error);
@@ -54,27 +50,13 @@ export async function getAccountId(token, id) {
     },
   });
   let data = await responce.json();
-  // let account;
-  // let balance;
-  // let allTransaction;
   let payloadData;
-  //   console.log(responce);
   if (responce.status === 200 && data.error === "" && data.payload !== null) {
-    // console.log(data.payload);
     payloadData = data.payload;
-    // account = data.payload[0].account;
-    // balance = data.payload[0].balance;
-    // allTransaction = data.payload[0].transactions;
-    // console.log(account);
   } else throw new Error(data.error);
 
-  console.log(data);
-  console.log(data.payload);
   return {
     payloadData,
-    // account,
-    // balance,
-    // allTransaction,
   };
 }
 export async function getNewAccount(token) {
@@ -86,10 +68,8 @@ export async function getNewAccount(token) {
     },
   });
   let data = await responce.json();
-  console.log(data);
 }
 export async function transferFunds(token, id, to, amount) {
-  console.log(token, id, to, amount);
   let responce = await fetch(`${CLIENT_ORIGIN_URL}transfer-funds`, {
     method: "POST",
     headers: {

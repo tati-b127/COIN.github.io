@@ -3,7 +3,6 @@ import "./styles/style.scss";
 import { getLocalToken } from "./local.js";
 import Navigo from "navigo";
 export const router = new Navigo("/", { hash: true });
-// export const router = new Navigo("/");
 import {
   renderPage,
   renderLoginPage,
@@ -14,11 +13,7 @@ import {
   renderCurrencyPage,
 } from "./render.js";
 
-// import { transferFunds } from "./api";
-
-console.log(router);
 if (navigator.onLine) {
-  console.log(window.navigator.onLine);
   console.log("Online");
 } else {
   console.log("Offline");

@@ -246,12 +246,6 @@ export function createDetailCanvas(
       }, 0)
     );
   });
-  // console.log(arrMonth);
-  // console.log(arrAmount);
-  // console.log(arrIncr);
-  // console.log(arrDecr);
-  // console.log(arrIn);
-  // console.log(arrOut);
 
   let data;
   if (type === "in-out") {

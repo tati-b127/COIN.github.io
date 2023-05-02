@@ -2,7 +2,6 @@ import { mount, el, setChildren } from "redom";
 import { router } from "./main.js";
 import Choices from "choices.js";
 import "./libs/choices.min.js";
-import customSelect from "custom-select";
 
 import { Loader } from "@googlemaps/js-api-loader";
 import { setLocalCurrencyFeed, setLocalTransferAccount } from "./local.js";
@@ -51,7 +50,6 @@ const API = "AIzaSyCKqQjA7I5KHFisMuJGOLAPQscvpSGY7h8";
 
 export function renderPage(page) {
   window.document.body.innerHTML = "";
-  console.log(page);
   const root = el("main", { class: "root", id: "root" });
   const headerComponents = createHeader(router);
   const header = headerComponents.header;
@@ -68,7 +66,6 @@ export function renderPage(page) {
   mount(window.document.body, root);
 }
 export async function getData(token, id) {
-  console.log("FUNCTION GETDATA", token, id);
   if (id === undefined || id === null) {
     return await getAccounts(token);
   } else {
@@ -92,11 +89,9 @@ export function sortItemTransaction(data) {
 }
 
 export async function renderAllAccounts(mainRoot, token, sort) {
-  //   console.log(token);
   let payloadData = await getData(token, null).then(
     (resolve) => resolve.payloadData
   );
-  console.log(payloadData);
   mainRoot.innerHTML = "";
   if (sort === null || sort === undefined) payloadData;
   if (sort === "number") {
@@ -130,7 +125,6 @@ export async function renderAllAccounts(mainRoot, token, sort) {
 
     mount(mainRoot, accountItem);
   });
-  console.log(mainRoot);
   return mainRoot;
 }
 
@@ -142,23 +136,17 @@ export function renderLoginPage() {
   const inputPassword = loginComponent.inputPassword;
   formLogin.addEventListener("submit", async (e) => {
     e.preventDefault();
-    console.log("spinner added");
     const login = inputLogin.value;
     const password = inputPassword.value;
-
-    console.log(login, password);
-    // router.navigate("/accounts");
     let token;
     try {
       validateLogin(login);
       validatePassword(password);
       token = await getToken(login, password);
-      console.log(token);
       inputLogin.classList.add("success");
       inputPassword.classList.add("success");
       router.navigate("/accounts");
     } catch (error) {
-      console.log(error);
       if (
         error.message === "No such user" ||
         error.message === "Некорректное значение логина"
@@ -171,7 +159,6 @@ export function renderLoginPage() {
         return inputPassword.classList.add("error");
     }
   });
-  console.log(loginPage);
   return loginPage;
 }
 
@@ -180,30 +167,18 @@ export async function renderMainPage(token) {
   let mainPage = mainComponent.mainPage;
   let mainRoot = mainComponent.main;
   const filter = mainComponent.filter;
-  // customSelect(filter);
   const choices = new Choices(filter, {
     searchChoices: false,
     placeholderValue: "Сортировка",
     isOpen: false,
     shouldSort: false,
   });
-  choices.setChoices(
-    [
-      { value: "", label: "Сортировка", selected: true },
-      { value: "number", label: "По номеру" },
-      { value: "balance", label: "По балансу" },
-      { value: "transactionDate", label: "По последней транзакции" },
-    ]
-    // "value",
-    // "label",
-    // false
-  );
-  console.log(choices);
-  const select = document.querySelector(".choices__inner");
-  console.log(select);
-  // choices.addEventListener("addItem", () => {
-  //   choices.hideDropdown();
-  // });
+  choices.setChoices([
+    { value: "", label: "Сортировка", selected: true },
+    { value: "number", label: "По номеру" },
+    { value: "balance", label: "По балансу" },
+    { value: "transactionDate", label: "По последней транзакции" },
+  ]);
   const btnAddAccount = mainComponent.btnAddAccount;
   let accounts = await renderAllAccounts(mainRoot, token);
 
@@ -215,7 +190,6 @@ export async function renderMainPage(token) {
   filter.addEventListener("change", async (e) => {
     e.preventDefault();
     const sort = filter.value;
-    console.log(sort);
     accounts = await renderAllAccounts(mainRoot, token, sort);
   });
   mount(mainPage, accounts);
@@ -223,7 +197,6 @@ export async function renderMainPage(token) {
 }
 
 export async function renderDetailPage(token, accountId) {
-  console.log(token, accountId);
   let payloadData = await getData(token, accountId).then(
     (resolve) => resolve.payloadData
   );
@@ -252,8 +225,6 @@ export async function renderDetailPage(token, accountId) {
   let inputTo = transaction.inputTransactionAccount;
   let inputAmount = transaction.inputTransactionCash;
   let transactionForm = transaction.transactionForm;
-  //   let btnTransaction = transaction.btnSendTransaction;
-  console.log(inputAmount, inputTo, transactionForm);
 
   mount(detailPage, header);
   mount(detailPage, transaction.transaction);
@@ -269,10 +240,8 @@ export async function renderDetailPage(token, accountId) {
         token,
         accountId,
         inputTo.value,
-        // inputValidAmount
         inputAmount.value
       );
-      console.log(transfer);
       let transferLocal = await setLocalTransferAccount(
         "transfer",
         inputTo.value
@@ -308,7 +277,6 @@ export async function renderDetailPage(token, accountId) {
         )
       );
     } catch (error) {
-      console.log(error);
       if (
         error.message === "Invalid account from" ||
         error.message === "Invalid account" ||
@@ -326,7 +294,6 @@ export async function renderDetailPage(token, accountId) {
         return inputAmount.classList.add("error");
     }
   });
-  console.log(detailPage);
   return detailPage;
 }
 export async function renderDetailHistoryPage(token, accountId) {
@@ -374,7 +341,6 @@ export async function renderDetailHistoryPage(token, accountId) {
   mount(detailHistoryPage, canvasInOut);
   mount(detailHistoryPage, historyTable);
 
-  console.log(detailHistoryPage);
   return detailHistoryPage;
 }
 export function getCorrectDate(isoDate) {
@@ -409,7 +375,6 @@ export function getCorrectMonth(isoDate) {
     Декабрь: "12",
   };
   let m = Object.keys(objMonth).filter((k) => objMonth[k] === month);
-  //   console.log(m);
   return `${m} ${year}`;
 }
 export async function renderBanksPage() {
@@ -417,7 +382,6 @@ export async function renderBanksPage() {
   const banksComponent = createBanksPage();
   const banksPage = banksComponent.banks;
   const banksMap = banksComponent.banksMap;
-  console.log(banksData);
   const loader = new Loader({
     apiKey: API,
     // apiKey: "AIzaSyBnDRckHb83ElZJGp-X_FXCFPtfociuCBQ",
@@ -442,27 +406,19 @@ export async function renderBanksPage() {
       marker.setMap(map);
     }
   });
-  console.log(loader);
-  console.log(banksPage);
   return banksPage;
 }
 export async function renderCurrencyPage(token) {
   const currencyAccount = await getCurrencyAccounts(token);
   const allCurrencies = await getAllCurrencies();
   const socket = await getChangedCurrency();
-  //   let feed = JSON.parse(localStorage.getItem("currencyFeed"));
-  console.log(socket);
-  //   console.log(feed);
   const currencyComponent = createCurrencyPage();
   let currencyRoot = currencyComponent.currencyRoot;
   let currencyBlocks = currencyComponent.currencyBlocks;
-  console.log(currencyBlocks);
   let blockFeed = createCurrencyFeed();
   mount(blockFeed, createCurrencyListFeed());
   socket.onmessage = async function (event) {
-    console.log(event.data);
-    let sok = await setLocalCurrencyFeed("currencyFeed", event.data);
-    console.log(sok);
+    await setLocalCurrencyFeed("currencyFeed", event.data);
     let feed = JSON.parse(localStorage.getItem("currencyFeed"));
     mount(blockFeed, createCurrencyListFeed(feed));
   };
@@ -473,17 +429,13 @@ export async function renderCurrencyPage(token) {
   let inputFrom = exchangeComponent.inputFrom;
   let inputTo = exchangeComponent.inputTo;
   let inputAmount = exchangeComponent.inputAmount;
-  console.log(inputFrom);
   const choicesFrom = new Choices(inputFrom, {
     searchChoices: false,
     isOpen: false,
     shouldSort: true,
   });
   const choicesTo = new Choices(inputTo);
-  console.log(allCurrencies);
   allCurrencies.payload.forEach((currency) => {
-    console.log(choicesFrom);
-    console.log(currency);
     choicesFrom.setValue([{ value: currency, label: currency }]);
   });
   allCurrencies.payload.forEach((currency) => {
@@ -499,11 +451,7 @@ export async function renderCurrencyPage(token) {
         inputAmount.value,
         token
       );
-      console.log(exchange);
       let currency = exchange.payload;
-      console.log(Object.values(currency));
-      console.log(Object.values(exchange.payload));
-      //   const currencyRoot = createCurrencyPage().currencyBlocks;
       const currencyAccountNew = createCurrencyAccount(Object.values(currency));
       const blockFeedNew = createCurrencyFeed();
       router.navigate("/currency");

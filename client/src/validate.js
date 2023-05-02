@@ -1,7 +1,5 @@
 export function validateLogin(login) {
-  console.log(login);
   let reg = /^[a-z0-9_-]{6,16}$/;
-  console.log(reg.test(login));
   if (reg.test(login)) {
     return login;
   } else {
@@ -10,14 +8,11 @@ export function validateLogin(login) {
 }
 export function validatePassword(password) {
   let reg = /^[a-z0-9_-]{6,16}$/;
-  console.log(reg.test(password));
   if (reg.test(password)) {
     return password;
   } else throw new Error("Некорректное значение пароля");
 }
 export function validateInputTo(value) {
-  console.log(value);
-  // let number = /^\d+$/;
   let number = /^[0-9]{14,26}$/;
   if (number.test(value)) {
     return value;
@@ -28,7 +23,6 @@ export function validateInputTo(value) {
   } else throw new Error("Некорректный счет");
 }
 export function validateInputAmount(value) {
-  console.log(value);
   let number = /^\d+$/;
   if (number.test(value)) {
     return value;
